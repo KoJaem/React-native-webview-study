@@ -1,6 +1,8 @@
 import { useRef } from "react"
-import { Alert, Button, Platform, SafeAreaView, StyleSheet } from "react-native"
+import { Alert, Button, Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native"
 import { WebView } from "react-native-webview"
+
+const statusBarHeight = StatusBar.currentHeight
 
 const App = () => {
   const webviewRef = useRef<WebView>(null)
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: Platform.select({
-      android: "10%"
+      android: statusBarHeight
     })
   }
 })
