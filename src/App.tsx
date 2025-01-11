@@ -1,43 +1,40 @@
+// App.tsx (React Native)
 import { useRef } from "react"
-import { Alert, Button, SafeAreaView, View } from "react-native"
-import type { WebViewMessageEvent } from "react-native-webview"
+import { Alert, Button, Platform, SafeAreaView, StyleSheet } from "react-native"
 import { WebView } from "react-native-webview"
 
-export default function App() {
+const App = () => {
   const webviewRef = useRef<WebView>(null)
 
-  // useEffect(() => {
-  //   webviewRef.current?.postMessage("업데이트 하세요")
-  // }, [])
-
-  const onMessage = (e: WebViewMessageEvent) => {
-    const data = e.nativeEvent.data
-    Alert.alert(data)
+  // 메시지 보내기
+  const sendMessageToWeb = () => {
+    if (webviewRef.current) {
+      webviewRef.current?.postMessage("Hello from React Native!")
+    }
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flexDirection: "row" }}>
-        <Button
-          title="back"
-          onPress={() => {
-            webviewRef.current?.goBack()
-          }}
-        />
-        <Button
-          title="Reload"
-          onPress={() => {
-            webviewRef.current?.reload()
-          }}
-        />
-        <Button
-          title="Forward"
-          onPress={() => {
-            webviewRef.current?.goForward()
-          }}
-        />
-      </View>
-      <WebView source={{ uri: "http://naver.com" }} ref={webviewRef} onMessage={onMessage} />
+    <SafeAreaView style={styles.container}>
+      <Button title="Send Message to Web" onPress={sendMessageToWeb} />
+      <WebView
+        ref={webviewRef}
+        source={{ uri: "https://6cb2-118-47-160-139.ngrok-free.app" }}
+        onMessage={(event) => {
+          Alert.alert("Message received from WebView:", event.nativeEvent.data)
+          // Alert.alert("Message received from WebView:", JSON.parse(event.nativeEvent.data).type)
+        }}
+      />
     </SafeAreaView>
   )
 }
+
+export default App
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: Platform.select({
+      android: "10%"
+    })
+  }
+})
