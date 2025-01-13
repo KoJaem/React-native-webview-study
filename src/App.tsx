@@ -1,49 +1,45 @@
-import { useRef } from "react"
-import { Alert, Button, Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native"
-import { WebView } from "react-native-webview"
+import WebViewContainer from "@/components/WebViewContainer"
+import { NavigationContainer } from "@react-navigation/native"
+import { createStackNavigator, TransitionPresets } from "@react-navigation/stack"
 
-const statusBarHeight = StatusBar.currentHeight
+import type { StackParamList } from "@/components/WebViewContainer"
+
+const Stack = createStackNavigator<StackParamList>()
 
 const App = () => {
-  const webviewRef = useRef<WebView>(null)
-
-  // 메시지 보내기
-  const sendMessageToWeb = () => {
-    if (webviewRef.current) {
-      webviewRef.current?.postMessage("Hello from React Native!")
-    }
-  }
-
   return (
-    <SafeAreaView style={styles.container}>
-      <Button title="Send Message to Web" onPress={sendMessageToWeb} />
-      <WebView
-        ref={webviewRef}
-        source={{
-          uri: "https://6cb2-118-47-160-139.ngrok-free.app",
-          headers: {
-            "Accept-Language": "ko"
-          }
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          ...TransitionPresets.SlideFromRightIOS,
+          headerShown: false
         }}
-        onMessage={(event) => {
-          Alert.alert("Message received from WebView:", event.nativeEvent.data)
-          // Alert.alert("Message received from WebView:", JSON.parse(event.nativeEvent.data).type)
-        }}
-        onContentProcessDidTerminate={() => {
-          webviewRef.current?.reload()
-        }}
-      />
-    </SafeAreaView>
+      >
+        <Stack.Screen
+          // options={{
+          //   transitionSpec: {
+          //     open: {
+          //       animation: "spring",
+          //       config: {
+          //         stiffness: 2000,
+          //         damping: 1000
+          //       }
+          //     },
+          //     close: {
+          //       animation: "spring",
+          //       config: {
+          //         stiffness: 1000,
+          //         damping: 500
+          //       }
+          //     }
+          //   }
+          // }}
+          name="Screen"
+          component={WebViewContainer}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 
 export default App
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: Platform.select({
-      android: statusBarHeight
-    })
-  }
-})

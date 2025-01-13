@@ -1,0 +1,3 @@
+export const POSTMESSAGE_TYPE = {
+  ROUTER_EVENT: "ROUTER_EVENT"
+}
